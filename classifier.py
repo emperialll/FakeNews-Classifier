@@ -1,3 +1,5 @@
+import pandas as pd
+import matplotlib.pyplot as plt
 import seaborn as sns
 import spacy
 from spacy import displacy
@@ -18,4 +20,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
+
+# set plot options
+plt.rcParams['figure.figsize'] = (12, 8)
+default_plot_colour = "#00bfbf"
+
+data = pd.read_csv("fake_news_data.csv")
 
