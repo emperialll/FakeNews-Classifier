@@ -27,3 +27,40 @@ default_plot_colour = "#00bfbf"
 
 data = pd.read_csv("fake_news_data.csv")
 
+# POS Tagging
+
+nlp = spacy.load('en_core_web_sm')
+# split data by fake and factual news
+fake_news = data[data['fake_or_factual'] == "Fake News"]
+fact_news = data[data['fake_or_factual'] == "Factual News"]
+
+# create spacey documents - use pipe for dataframe
+fake_spaceydocs = list(nlp.pipe(fake_news['text']))
+fact_spaceydocs = list(nlp.pipe(fact_news['text']))
+
+# create function to extract tags for each document in our data
+def extract_token_tags(doc:spacy.tokens.doc.Doc):
+    return [(i.text, i.ent_type_, i.pos_) for i in doc]
+
+# Define Dataframe columns
+columns = ["token", "ner_tag", "pos_tag"]
+
+# tag fake dataset
+fake_tagsdf = []
+for ix, doc in enumerate(fake_spaceydocs):
+    tags = extract_token_tags(doc)
+    tags = pd.DataFrame(tags)
+    tags.columns = columns
+    fake_tagsdf.append(tags)
+
+fake_tagsdf = pd.concat(fake_tagsdf)
+
+# tag factual dataset
+fact_tagsdf = []
+for ix, doc in enumerate(fact_spaceydocs):
+    tags = extract_token_tags(doc)
+    tags = pd.DataFrame(tags)
+    tags.columns = columns
+    fact_tagsdf.append(tags)
+
+fact_tagsdf = pd.concat(fact_tagsdf)
